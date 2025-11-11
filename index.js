@@ -35,6 +35,18 @@ async function run() {
       }
     });
 
+
+    app.patch("/all-review/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedReview = req.body; 
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {updatedReview },
+      };  
+      const result = await allreview.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
     //delete review api
     app.delete("/all-review/:id", async (req, res) => {
       const id = req.params.id;
@@ -42,7 +54,7 @@ async function run() {
       const result = await allreview.deleteOne(query);
       res.send(result);
     });
-
+//get review api
     app.get("/all-review", async (req, res) => {
       try {
         const reviews = await allreview.find().toArray();
@@ -50,6 +62,14 @@ async function run() {
       } catch (error) {
         res.status(500).json({ message: error.message });
       }
+    });
+
+    //get review by id api
+    app.get("/all-review/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const review = await allreview.findOne(query);
+      res.send(review);
     });
 
     await client.db("admin").command({ ping: 1 });
