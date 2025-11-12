@@ -118,6 +118,33 @@ async function run() {
         res.status(500).json({ message: error.message });
       }
     });
+
+    // get favorite by email
+    app.get("/my-favorite", async (req, res) => {
+      try {
+        const userEmail = req.query.email;
+        const query = { email: userEmail };
+        const favorite = await allfavorite.find(query).toArray();
+        res.send(favorite);
+      } catch (error) {
+        console.error("Error fetching favorite:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+     
+    });
+    // get review by email
+    app.get("/my-review", async (req, res) => {
+      try {
+        const userEmail = req.query.email;
+        const query = { email: userEmail };
+        const review = await allreview.find(query).toArray();
+        res.send(review);
+      } catch (error) {
+        console.error("Error fetching favorite:", error);
+        res.status(500).json({ message: "Internal server error" });
+      }
+     
+    });
     // first 6 review sort and limit
     app.get("/all-review/sort", async (req, res) => {
       try {
