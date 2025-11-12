@@ -79,29 +79,16 @@ async function run() {
     });
 
 // update by patch method 
-app.patch("/all-review/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    console.log("Incoming PATCH ID:", id);
-
-    const updatedReview = req.body; 
-    console.log("Incoming PATCH body:", updatedReview);
-
-    const filter = { _id: new ObjectId(id) };
-    console.log("MongoDB filter:", filter);
-
-    const updateDoc = { $set: updatedReview };
-
-    const result = await allreview.updateOne(filter, updateDoc);
-    console.log("Update result:", result);
-
-    res.send(result);
-  } catch (error) {
-    console.error("Error updating review:", error);
-    res.status(500).send({ error: error.message });
-  }
-});
-
+    app.patch("/all-review/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedReview = req.body; 
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: updatedReview,
+      };  
+      const result = await allreview.updateOne(filter, updateDoc);
+      res.send(result);
+    });
 
 
 
@@ -113,14 +100,25 @@ app.patch("/all-review/:id", async (req, res) => {
       res.send(result);
     });
 //get review api
-    app.get("/all-review", async (req, res) => {
-      try {
-        const reviews = await allreview.find().sort({starRating:-1}).toArray();
-        res.json(reviews);
-      } catch (error) {
-        res.status(500).json({ message: error.message });
-      }
-    });
+app.get("/all-review", async (req, res) => {
+  try {
+    const search = req.query.search || "";
+    const query = search
+      ? { foodName: { $regex: search, $options: "i" } }
+      : {};
+
+    const reviews = await allreview
+      .find(query)
+      .sort({ starRating: -1 })
+      .toArray();
+
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 
     //get all favorite api
     app.get("/all-favorite", async (req, res) => {
