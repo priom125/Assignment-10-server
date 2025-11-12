@@ -35,17 +35,19 @@ async function run() {
       }
     });
 
-
+// update by patch method 
     app.patch("/all-review/:id", async (req, res) => {
       const id = req.params.id;
       const updatedReview = req.body; 
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
-        $set: {updatedReview },
+        $set: updatedReview,
       };  
       const result = await allreview.updateOne(filter, updateDoc);
       res.send(result);
     });
+
+
 
     //delete review api
     app.delete("/all-review/:id", async (req, res) => {
@@ -57,12 +59,23 @@ async function run() {
 //get review api
     app.get("/all-review", async (req, res) => {
       try {
-        const reviews = await allreview.find().toArray();
+        const reviews = await allreview.find().sort({starRating:-1}).toArray();
         res.json(reviews);
       } catch (error) {
         res.status(500).json({ message: error.message });
       }
     });
+    // first 6 review sort and limit
+    app.get("/all-review/sort", async (req, res) => {
+      try {
+        const reviews = await allreview.find().sort({starRating:-1}).limit(6).toArray();
+        res.json(reviews);
+      } catch (error) {
+        res.status(500).json({ message: error.message });
+      }
+    });
+// get review by email
+ 
 
     //get review by id api
     app.get("/all-review/:id", async (req, res) => {
