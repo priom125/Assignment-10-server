@@ -25,7 +25,7 @@ async function run() {
     const db = client.db("LocalEats");
     const allreview = db.collection("all-review");
     //post review api
-    app.post("/all-review", async (req, res) => {
+    app.post("/add-review", async (req, res) => {
       try {
         const newReview = req.body;
         const result = await allreview.insertOne(newReview);
