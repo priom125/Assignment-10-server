@@ -159,7 +159,7 @@ async function run() {
     });
     // get review by email
 
-    app.get("/user/reviews", verifyFirebaseToken, async (req, res) => {
+    app.get("/user/reviews", async (req, res) => {
       const userEmail = req.user.email;
       const reviews = await allreview.find({ email: userEmail }).toArray();
       res.json(reviews);
@@ -173,7 +173,7 @@ async function run() {
       res.send(review);
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
@@ -199,6 +199,6 @@ app.listen(PORT, () => {
 
 // Handle application shutdown
 process.on("SIGINT", async () => {
-  await client.close();
+  // await client.close();
   process.exit(0);
 });
